@@ -13,7 +13,7 @@
         "classmap": [
         ],
         "psr-4": {
-            "Jacksunny\\ExpressApi\\": "vendor/jacksunny/expressapi/src"
+            "Jacksunny\\ExpressApi\\": "src"
         }
     }
 }
