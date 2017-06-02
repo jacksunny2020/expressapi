@@ -3,7 +3,7 @@ api for express information exchange
 
 How to install and configurate package
 
-1.install the laravel package 
+1. install the laravel package 
   composer require jacksunny/expressapi
 
 2. publish view files
