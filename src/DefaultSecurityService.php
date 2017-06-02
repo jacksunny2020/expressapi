@@ -23,10 +23,10 @@ class DefaultSecurityService implements SecurityServiceContract {
         $result = "";
 
         if (empty($key)) {
-            throw new Exception("缺少appkey,请提供非空appkey生成签名");
+            throw new \Exception("缺少appkey,请提供非空appkey生成签名");
         }
         if (empty($data)) {
-            throw new Exception("缺少请求数据,请提供至少一个请求数据");
+            throw new \Exception("缺少请求数据,请提供至少一个请求数据");
         }
         $result = base64_encode(md5(trim($key) . trim($data)));
 

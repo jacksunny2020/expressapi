@@ -25,6 +25,10 @@ define("ERROR_CODE_QUERY_ORDER_FAIL", 8030);
  * 错误:缺少必须的输入参数
  */
 define("ERROR_CODE_MISSING_INPUT_PARAMS", 8050);
+/**
+ * 错误:缺少必须的输入参数
+ */
+define("ERROR_CODE_MISSING_QUERY_PARAMS",8060);
 
 class ApiController {
 
@@ -83,9 +87,9 @@ class ApiController {
         if ($sigSuccess == false) {
             return $this->jsonResponse($order, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }
-        $requiredInputParams = $this->order_service->apiRequiredInputParams();
-        $missingParams = ArrayHelper::findMissingParams($request->input(), $requiredInputParams);
-        if (!empty($missingParams) && count($missingParams) > 0) {
+        $requiredInputParams = $this->order_service->apiCheckRequiredCreateParams($request);
+        if ($requiredInputParams == false) {
+            $missingParams = $this->order_service->findMissingCreateParams($request->input());
             return $this->jsonResponse($order, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
         }
 
@@ -111,6 +115,11 @@ class ApiController {
             return $this->jsonResponse($query, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }
         try {
+            $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($request);
+            if ($requiredQueryParams == false) {
+                $missingParams = $this->order_service->findMissingQueryParams($request->input());
+                return $this->jsonResponse($order, ERROR_CODE_MISSING_QUERY_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
+            }
             //根据提交的查询条件返回多个符合条件的订单列表
             $orders = $this->order_service->apiQueryOrders($query);
 

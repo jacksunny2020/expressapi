@@ -26,14 +26,24 @@ interface OrderServiceContract {
     function apiQueryOrders($query);
     
     /**
-     * 创建订单时订单必填参数的参数名数组，比如['sender_name','sender_mobile']
+     * 创建订单时订单必填参数的检查，返回true或false
      */
-    function apiRequiredInputParams();
+    function apiCheckRequiredCreateParams();
     
     /**
-     * 查询订单输出时订单必须输出的字段名数组，比如['waybill','sender_name','target_address']
+     * 查询订单时必须提供的的查询参数名称的检查，返回true或false
      */
-    function apiRequiredOutputParams();
+    function apiCheckRequiredQueryParams();
+    
+    /**
+     * 从输入参数找到缺失的必填参数名称列表，如果有作为结果数组返回
+     */
+    function findMissingCreateParams($input_param_array);
+    
+    /**
+     * 从输入参数找到缺失的必填参数名称列表，如果有作为结果数组返回
+     */
+    function findMissingQueryParams($input_param_array);
     
     
 }

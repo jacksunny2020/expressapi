@@ -29,75 +29,20 @@ class MockOrderService implements OrderServiceContract {
         return array($order);
     }
 
-    public function apiRequiredInputParams() {
-        return [
-            'waybill_type',
-            'goods_type', //'goods_type_id',
-            'order_orignal_number', //'order_orignal_id',
-            'agent_name', //'agent_id',
-            'sender_user_name', //'sender_user_id',
-            'sender_country',
-            'sender_province',
-            'sender_city',
-            'sender_district',
-            'sender_community',
-            'sender_name',
-            'sender_address',
-            'sender_telephone',
-            'sender_remark',
-            'sender_book_date',
-            'sender_book_time',
-            'target_name',
-            'target_country',
-            'target_province',
-            'target_city',
-            'target_district',
-            'target_community',
-            'target_address',
-            'target_telephone',
-            'target_book_date',
-            'target_book_time',
-            'weight',
-            'distance',
-            'volume',
-            'boxes',
-        ];
+    public function apiCheckRequiredCreateParams() {
+        return true;
     }
 
-    public function apiRequiredOutputParams() {
-        return [
-            'waybill',
-            'waybill_type',
-            'goods_type_id',
-            'order_orignal_id',
-            'agent_id',
-            'sender_user_id',
-            'sender_country',
-            'sender_province',
-            'sender_city',
-            'sender_district',
-            'sender_community',
-            'sender_name',
-            'sender_address',
-            'sender_telephone',
-            'sender_remark',
-            'sender_book_date',
-            'sender_book_time',
-            'target_name',
-            'target_country',
-            'target_province',
-            'target_city',
-            'target_district',
-            'target_community',
-            'target_address',
-            'target_telephone',
-            'target_book_date',
-            'target_book_time',
-            'weight',
-            'distance',
-            'volume',
-            'boxes',
-        ];
+    public function apiCheckRequiredQueryParams() {
+        return true;
+    }
+
+    public function findMissingCreateParams($input_param_array) {
+        return array();
+    }
+
+    public function findMissingQueryParams($input_param_array) {
+        return array();
     }
 
 }
