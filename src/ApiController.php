@@ -42,11 +42,14 @@ class ApiController {
     protected $order_service;
     //提供记录日志的服务
     protected $log_service;
+    //提供参数转换的服务
+    protected $param_trans_service;
 
-    public function __construct(SecurityServiceContract $security_service, OrderServiceContract $order_service, LogServiceContract $log_service) {
+    public function __construct(SecurityServiceContract $security_service, OrderServiceContract $order_service, LogServiceContract $log_service, ParamTransServiceContract $param_trans_service = null) {
         $this->security_service = $security_service;
         $this->order_service = $order_service;
         $this->log_service = $log_service;
+        $this->param_trans_service = $param_trans_service;
     }
 
 //    public function index($timezone){
@@ -80,16 +83,20 @@ class ApiController {
      */
     public function inputOrder(Request $request) {
         $this->logRequest($request);
-        $key = $request->input('key');
-        $order = $request->input('order');
-        $sig = $request->input('sig');
+        $data= $request->except(['_url','_method']);
+        if(isset($this->param_trans_service)){
+            $data = $this->param_trans_service->TransInputOrderRequest($data);
+        }
+        $key = $data['key'];
+        $order = $data['order'];
+        $sig = $data['sig'];
         $sigSuccess = $this->checkSigResult($key, $order, $sig);
         if ($sigSuccess == false) {
             return $this->jsonResponse($order, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }
-        $requiredInputParams = $this->order_service->apiCheckRequiredCreateParams($request);
+        $requiredInputParams = $this->order_service->apiCheckRequiredCreateParams($data);
         if ($requiredInputParams == false) {
-            $missingParams = $this->order_service->findMissingCreateParams($request->input());
+            $missingParams = $this->order_service->findMissingCreateParams($data);
             return $this->jsonResponse($order, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
         }
         try {
@@ -106,9 +113,13 @@ class ApiController {
      */
     public function queryOrders(Request $request) {
         $this->logRequest($request);
-        $key = $request->input('key');
-        $query = $request->input('query');
-        $sig = $request->input('sig');
+        $data= $request->except(['_url','_method']);
+        if(isset($this->param_trans_service)){
+            $data = $this->param_trans_service->TransQueryOrderRequest($data);
+        }
+        $key = $data['key'];
+        $query = $data['query'];
+        $sig = $data['sig'];
         $sigSuccess = $this->checkSigResult($key, $query, $sig);
         if ($sigSuccess == false) {
             return $this->jsonResponse($query, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
@@ -116,7 +127,7 @@ class ApiController {
         try {
             $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($key,$request);
             if ($requiredQueryParams == false) {
-                $missingParams = $this->order_service->findMissingQueryParams($request->input());
+                $missingParams = $this->order_service->findMissingQueryParams($data);
                 return $this->jsonResponse($order, ERROR_CODE_MISSING_QUERY_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
             }
             //根据提交的查询条件返回多个符合条件的订单列表
