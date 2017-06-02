@@ -8,6 +8,8 @@
 
 namespace  Jacksunny\ExpressApi;
 
+use Illuminate\Http\Request;
+
 /**
  * Description of MockOrderService
  *
@@ -17,11 +19,11 @@ namespace  Jacksunny\ExpressApi;
 class MockOrderService implements OrderServiceContract {
 
     //put your code here
-    public function apiCreateOrderReturnWaybillid($order) {
+    public function apiCreateOrderReturnWaybillid($key,$order) {
         return "11111111111111111111";
     }
 
-    public function apiQueryOrders($query) {
+    public function apiQueryOrders($key,$query) {
         $order = [
             'waybill_id' => '11111111111111111',
             'external_number' => '2222222222',
@@ -29,11 +31,11 @@ class MockOrderService implements OrderServiceContract {
         return array($order);
     }
 
-    public function apiCheckRequiredCreateParams() {
+    public function apiCheckRequiredCreateParams(Request $request) {
         return true;
     }
 
-    public function apiCheckRequiredQueryParams() {
+    public function apiCheckRequiredQueryParams(Request $request) {
         return true;
     }
 
