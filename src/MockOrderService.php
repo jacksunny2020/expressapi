@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Jacksunny\ExpressApi;
+namespace  jacksunny\expressapi;
 
 /**
  * Description of MockOrderService
