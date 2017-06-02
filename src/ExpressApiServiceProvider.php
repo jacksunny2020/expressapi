@@ -1,6 +1,6 @@
 <?php
 
-namespace Jacksunny\ExpressApi;
+namespace  jacksunny\expressapi;
 
 use Illuminate\Support\ServiceProvider;
 
