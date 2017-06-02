@@ -8,6 +8,8 @@
 
 namespace  Jacksunny\ExpressApi;
 
+use Illuminate\Http\Request;
+
 /**
  *
  * @author 施朝阳
