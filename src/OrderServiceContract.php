@@ -18,22 +18,22 @@ interface OrderServiceContract {
     /**
      * 根据提供的订单数据在系统中创建订单，并返回该订单对应的运单号
      */
-    function apiCreateOrderReturnWaybillid($order);
+    function apiCreateOrderReturnWaybillid($key,$order);
 
     /**
      * 根据指定的查询条件返回对应的订单列表返回
      */
-    function apiQueryOrders($query);
+    function apiQueryOrders($key,$query);
     
     /**
      * 创建订单时订单必填参数的检查，返回true或false
      */
-    function apiCheckRequiredCreateParams();
+    function apiCheckRequiredCreateParams(Request $request);
     
     /**
      * 查询订单时必须提供的的查询参数名称的检查，返回true或false
      */
-    function apiCheckRequiredQueryParams();
+    function apiCheckRequiredQueryParams(Request $request);
     
     /**
      * 从输入参数找到缺失的必填参数名称列表，如果有作为结果数组返回
