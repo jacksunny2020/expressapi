@@ -1,0 +1,21 @@
+{
+    "name": "jacksunny/expressapi",
+    "description": "express api for system integration",
+    "authors": [
+        {
+            "name": "jacksunny",
+            "email": "jacksunny2020@126.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+	"autoload": {
+        "classmap": [
+            "database"
+        ],
+        "psr-4": {
+            "App\\": "app/",
+            "Jacksunny\\ExpressApi\\": "packages/jacksunny/expressapi/src"
+        }
+    }
+}
