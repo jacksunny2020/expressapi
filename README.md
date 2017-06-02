@@ -16,3 +16,5 @@ How to install and configurate package
         ......
         \Jacksunny\ExpressApi\ExpressApiServiceProvider::class,
     ],
+4.  test if it works
+  http://localhost/api/status
