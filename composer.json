@@ -13,8 +13,7 @@
         "classmap": [
         ],
         "psr-4": {
-            "App\\": "app/",
-            "Jacksunny\\ExpressApi\\": "packages/jacksunny/expressapi/src"
+            "App\\": "app/"
         }
     }
 }

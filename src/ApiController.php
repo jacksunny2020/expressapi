@@ -1,6 +1,6 @@
 <?php
 
-namespace jacksunny\expressapi;
+namespace Jacksunny\Expressapi;
 
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;

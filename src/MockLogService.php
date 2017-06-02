@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace  jacksunny\expressapi;
+namespace  Jacksunny\Expressapi;
 
 use Log;
 
