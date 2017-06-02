@@ -11,9 +11,10 @@
     "require": {},
 	"autoload": {
         "classmap": [
+		"src"
         ],
         "psr-4": {
-            "Jacksunny\\ExpressApi\\": "src"
+            "Jacksunny\\ExpressApi\\": "src/"
         }
     }
 }
