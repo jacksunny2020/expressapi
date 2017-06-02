@@ -14,8 +14,16 @@ class ExpressApiServiceProvider extends ServiceProvider {
     public function boot() {
         //view name from package name is expressapi
         $this->loadViewsFrom(__DIR__ . '/views', 'expressapi');
+        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        
         $this->publishes([
             __DIR__ . '/views' => base_path('resources/views/jacksunny/expressapi'),
+            __DIR__ . '/routes.php' => base_path('routes/routes.php'),
+            __DIR__ . '/ApiController.php' => base_path('app/Http/Controllers/ApiController.php'),
+            __DIR__ . '/ExpressApiServiceProvider.php' => base_path('app/Providers/ExpressApiServiceProvider.php'),
+            __DIR__ . '/LogServiceContract.php' => base_path('app/Providers/LogServiceContract.php'),
+            __DIR__ . '/OrderServiceContract.php' => base_path('app/Providers/OrderServiceContract.php'),
+            __DIR__ . '/SecurityServiceContract.php' => base_path('app/Providers/SecurityServiceContract.php'),
         ]);
     }
 
