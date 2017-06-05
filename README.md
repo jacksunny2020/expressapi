@@ -5,6 +5,7 @@ How to install and configurate package
 
 1. install the laravel package 
   composer require jacksunny/expressapi
+  composer require "jacksunny/expressapi":"dev-master"
 
 2. publish view files
   php artisan vendor:publish
