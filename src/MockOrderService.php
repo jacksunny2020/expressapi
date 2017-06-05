@@ -34,11 +34,11 @@ class MockOrderService implements OrderServiceContract {
         return array($order);
     }
 
-    public function apiCheckRequiredCreateParams(Request $request) {
+    public function apiCheckRequiredCreateParams($data) {
         return true;
     }
 
-    public function apiCheckRequiredQueryParams(Request $request) {
+    public function apiCheckRequiredQueryParams($data) {
         return true;
     }
 

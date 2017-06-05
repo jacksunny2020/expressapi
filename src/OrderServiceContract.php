@@ -30,12 +30,12 @@ interface OrderServiceContract {
     /**
      * 创建订单时订单必填参数的检查，返回true或false
      */
-    function apiCheckRequiredCreateParams(Request $request);
+    function apiCheckRequiredCreateParams($data);
     
     /**
      * 查询订单时必须提供的的查询参数名称的检查，返回true或false
      */
-    function apiCheckRequiredQueryParams(Request $request);
+    function apiCheckRequiredQueryParams($data);
     
     /**
      * 从输入参数找到缺失的必填参数名称列表，如果有作为结果数组返回
