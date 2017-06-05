@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace  Jacksunny\ExpressApi;
+namespace Jacksunny\ExpressApi;
 
 use Illuminate\Http\Request;
 
@@ -19,11 +19,14 @@ use Illuminate\Http\Request;
 class MockOrderService implements OrderServiceContract {
 
     //put your code here
-    public function apiCreateOrderReturnWaybillid($key,$order) {
-        return "11111111111111111111";
+    public function apiCreateOrderReturnWaybillid($key, $order) {
+        $waybill_info = [
+            'waybill' => "11111111111111111111"
+        ];
+        return $waybill_info;
     }
 
-    public function apiQueryOrders($key,$query) {
+    public function apiQueryOrders($key, $query) {
         $order = [
             'waybill_id' => '11111111111111111',
             'external_number' => '2222222222',

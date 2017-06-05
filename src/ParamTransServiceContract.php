@@ -16,14 +16,24 @@ namespace  Jacksunny\ExpressApi;
 interface ParamTransServiceContract {
 
     /**
-     * 将请求的参数转换成创建订单必须的参数格式和名称,返回转换后的请求参数
+     * 订单创建,将请求的参数转换成创建订单必须的参数格式和名称,返回转换后的请求参数数组
      */
     function TransInputOrderRequest(array $data);
     
     /**
-     * 将请求的参数转换成查询订单必须的参数格式和名称,返回转换后的请求参数
+     * 订单创建,将响应的数据转换成某种数据标准，返回转换成的某种标准数据格式的数据
+     */
+    function TransInputOrderResponse(array $data);
+    
+    /**
+     * 订单创建,将请求的参数转换成查询订单必须的参数格式和名称,返回转换后的请求参数
      */
     function TransQueryOrderRequest(array $data);
+    
+    /**
+     * 订单创建,将响应的数据转换成某种数据标准，返回转换成的某种标准数据格式的数据
+     */
+    function TransQueryOrderResponse(array $data);
 
     
 }

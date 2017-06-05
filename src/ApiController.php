@@ -28,7 +28,7 @@ define("ERROR_CODE_MISSING_INPUT_PARAMS", 8050);
 /**
  * 错误:缺少必须的输入参数
  */
-define("ERROR_CODE_MISSING_QUERY_PARAMS",8060);
+define("ERROR_CODE_MISSING_QUERY_PARAMS", 8060);
 
 class ApiController {
 
@@ -83,8 +83,8 @@ class ApiController {
      */
     public function inputOrder(Request $request) {
         $this->logRequest($request);
-        $data= $request->except(['_url','_method']);
-        if(isset($this->param_trans_service)){
+        $data = $request->except(['_url', '_method']);
+        if (isset($this->param_trans_service)) {
             $data = $this->param_trans_service->TransInputOrderRequest($data);
         }
         $key = $data['key'];
@@ -100,9 +100,12 @@ class ApiController {
             return $this->jsonResponse($order, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
         }
         try {
-            //根据提交的订单数据在系统中创建订单并返回这个订单的运单号
-            $waybill_id = $this->order_service->apiCreateOrderReturnWaybillid($key,$order);
-            return $this->jsonResponse($waybill_id);
+            //根据提交的订单数据在系统中创建订单并返回这个订单的运单号等信息
+            $waybill_info = $this->order_service->apiCreateOrderReturnWaybillid($key, $order);
+            if (isset($this->param_trans_service)) {
+                $waybill_info = $this->param_trans_service->TransInputOrderResponse($waybill_info);
+            }
+            return $this->jsonResponse($waybill_info);
         } catch (Exception $ex) {
             return $this->jsonResponse($order, ERROR_CODE_CREATE_ORDER_FAIL, "创建订单失败，请检查提供的订单数据是否完整并且符合规范，调整后请再尝试创建订单");
         }
@@ -113,8 +116,8 @@ class ApiController {
      */
     public function queryOrders(Request $request) {
         $this->logRequest($request);
-        $data= $request->except(['_url','_method']);
-        if(isset($this->param_trans_service)){
+        $data = $request->except(['_url', '_method']);
+        if (isset($this->param_trans_service)) {
             $data = $this->param_trans_service->TransQueryOrderRequest($data);
         }
         $key = $data['key'];
@@ -125,7 +128,7 @@ class ApiController {
             return $this->jsonResponse($query, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }
         try {
-            $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($key,$request);
+            $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($key, $request);
             if ($requiredQueryParams == false) {
                 $missingParams = $this->order_service->findMissingQueryParams($data);
                 return $this->jsonResponse($order, ERROR_CODE_MISSING_QUERY_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
@@ -138,7 +141,9 @@ class ApiController {
 //            if(!empty($missingParams) && count($missingParams)>0){
 //                return $this->jsonResponse($query, ERROR_CODE_MISSING_INPUT_PARAMS, "查询订单中缺少指定参数，请联系管理员提供指定参数:".$this->getParamsNamesStr());
 //            }
-
+            if (isset($this->param_trans_service)) {
+                $orders = $this->param_trans_service->TransQueryOrderResponse($orders);
+            }
             return $this->jsonResponse($orders);
         } catch (Exception $ex) {
             return $this->jsonResponse($query, ERROR_CODE_QUERY_ORDER_FAIL, "查询订单失败，请检查提供的查询条件是否完整有效,调整后再尝试查询订单");

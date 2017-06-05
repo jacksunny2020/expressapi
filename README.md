@@ -18,6 +18,3 @@ How to install and configurate package
     ],
 4.  test if it works
   http://localhost/api/status
-
-  
-  

@@ -22,8 +22,16 @@ class MockParamTransService implements ParamTransServiceContract {
     public function TransInputOrderRequest(array $data) {
         return $data;
     }
+    
+    public function TransInputOrderResponse(array $data) {
+        return $data;
+    }
 
     public function TransQueryOrderRequest(array $data) {
+        return $data;
+    }
+
+    public function TransQueryOrderResponse(array $data) {
         return $data;
     }
 
