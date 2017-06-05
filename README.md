@@ -19,4 +19,4 @@ How to install and configurate package
 4.  test if it works
   http://localhost/api/status
 
-5.please notify me if you got any problem or error on it,thank you
+5.please notify me if you got any problem or error on it,thank you!
