@@ -30,6 +30,10 @@ define("ERROR_CODE_MISSING_INPUT_PARAMS", 8050);
  */
 define("ERROR_CODE_MISSING_QUERY_PARAMS", 8060);
 /**
+ * 重复订单，一般外部订单号已存在则表示订单重复
+ */
+define("ERROR_CODE_DUPLICATE_ORDER", 8000);
+/**
  * appkey对应参数名
  */
 define("PARAM_APPKEY", "appkey");
@@ -112,10 +116,9 @@ class ApiController {
             return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数" . PARAM_SIGNATURE . "即签名数据");
         }
         $sig = $data[PARAM_SIGNATURE];
-        if(is_array($order)){
+        if (is_array($order)) {
             $sigSuccess = $this->checkSigResult($key, json_encode($order), $sig);
-        }else
-        {
+        } else {
             $sigSuccess = $this->checkSigResult($key, $order, $sig);
         }
         if ($sigSuccess == false) {
@@ -133,6 +136,9 @@ class ApiController {
             return $this->jsonResponse($order, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
         }
         try {
+            if ($this->order_service->apiExistDuplicateOrder($key, $data)) {
+                return $this->jsonResponse($order, ERROR_CODE_DUPLICATE_ORDER, "重复订单，请不要提交重复的订单:" . $order);
+            }
             //根据提交的订单数据在系统中创建订单并返回这个订单的运单号等信息
             $waybill_info = $this->order_service->apiCreateOrderReturnWaybillid($key, $data);
             if (isset($this->param_trans_service)) {

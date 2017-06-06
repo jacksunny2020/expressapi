@@ -21,6 +21,11 @@ interface OrderServiceContract {
      * 根据提供的订单数据在系统中创建订单，并返回该订单对应的运单号
      */
     function apiCreateOrderReturnWaybillid($key,$order);
+    
+    /**
+     * 根据提供的订单数据在系统中查询订单是否重复，存在返回true，不存在返回false,一般根据外部订单号判断是否重复
+     */
+    function apiExistDuplicateOrder($key,$order);
 
     /**
      * 根据指定的查询条件返回对应的订单列表返回

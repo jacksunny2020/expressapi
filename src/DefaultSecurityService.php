@@ -31,8 +31,9 @@ class DefaultSecurityService implements SecurityServiceContract {
         if(is_array($data)){
             $data = json_encode($data);
         }
-        $result = base64_encode(md5(trim($key) . trim($data)));
-
+        //$result = base64_encode(md5(trim($key) . trim($data)));
+        $result = md5(trim($key) . trim($data));
+	//var_dump($result);
         return $result;
     }
 
