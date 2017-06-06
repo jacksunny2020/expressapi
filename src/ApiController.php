@@ -29,6 +29,22 @@ define("ERROR_CODE_MISSING_INPUT_PARAMS", 8050);
  * 错误:缺少必须的输入参数
  */
 define("ERROR_CODE_MISSING_QUERY_PARAMS", 8060);
+/**
+ * appkey对应参数名
+ */
+define("PARAM_APPKEY", "appkey");
+/**
+ * 签名对应参数名
+ */
+define("PARAM_SIGNATURE", "sign");
+/**
+ * 下单数据对应参数名
+ */
+define("PARAM_DATA_ORDER_INPUT", "data");
+/**
+ * 查单数据对应参数名
+ */
+define("PARAM_DATA_ORDER_QUERY", "data");
 
 class ApiController {
 
@@ -71,9 +87,9 @@ class ApiController {
      */
     public function checkSig(Request $request) {
         $this->logRequest($request);
-        $key = $request->input('key');
-        $data = $request->input('data');
-        $sig = $request->input('sig');
+        $key = $request->input(PARAM_APPKEY);
+        $data = $request->input(PARAM_DATA_ORDER_INPUT);
+        $sig = $request->input(PARAM_SIGNATURE);
         $success = $this->checkSigResult($key, $data, $sig);
         return $this->jsonResponse($success);
     }
@@ -84,28 +100,31 @@ class ApiController {
     public function inputOrder(Request $request) {
         $this->logRequest($request);
         $data = $request->except(['_url', '_method']);
-        if (isset($this->param_trans_service)) {
-            $data = $this->param_trans_service->TransInputOrderRequest($data);
+        if (!isset($data[PARAM_APPKEY])) {
+            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数key即" . PARAM_APPKEY);
         }
-        if (!isset($data['key'])) {
-            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数key即appkey");
+        $key = $data[PARAM_APPKEY];
+        if (!isset($data[PARAM_DATA_ORDER_INPUT])) {
+            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数" . PARAM_DATA_ORDER_INPUT . "即订单数据");
         }
-        $key = $data['key'];
-        if (!isset($data['order'])) {
-            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数order即订单数据");
+        $order = $data[PARAM_DATA_ORDER_INPUT];
+        if (!isset($data[PARAM_SIGNATURE])) {
+            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数" . PARAM_SIGNATURE . "即签名数据");
         }
-        $order = $data['order'];
-        if (!isset($data['sig'])) {
-            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数sig即签名数据");
-        }
-        $sig = $data['sig'];
+        $sig = $data[PARAM_SIGNATURE];
         $sigSuccess = $this->checkSigResult($key, $order, $sig);
         if ($sigSuccess == false) {
             return $this->jsonResponse($order, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }
+        if (isset($this->param_trans_service)) {
+            $data = $this->param_trans_service->TransInputOrderRequest($data);
+        }
         $requiredInputParams = $this->order_service->apiCheckRequiredCreateParams($data);
-        if ($requiredInputParams == false) {
+        if (isset($requiredInputParams) && $requiredInputParams == false) {
             $missingParams = $this->order_service->findMissingCreateParams($data);
+            if (!isset($missingParams) || !is_array($missingParams)) {
+                $missingParams = [];
+            }
             return $this->jsonResponse($order, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
         }
         try {
@@ -126,33 +145,37 @@ class ApiController {
     public function queryOrders(Request $request) {
         $this->logRequest($request);
         $data = $request->except(['_url', '_method']);
-        if (isset($this->param_trans_service)) {
-            $data = $this->param_trans_service->TransQueryOrderRequest($data);
+
+        if (!isset($data[PARAM_APPKEY])) {
+            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数key即" . PARAM_APPKEY);
         }
-        if (!isset($data['key'])) {
-            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数key即appkey");
+        $key = $data[PARAM_APPKEY];
+        if (!isset($data[PARAM_DATA_ORDER_QUERY])) {
+            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数" . PARAM_DATA_ORDER_QUERY . "即订单查询条件");
         }
-        $key = $data['key'];
-        if (!isset($data['query'])) {
-            return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数query即订单查询条件");
-        }
-        $query = $data['query'];
-        if (!isset($data['sig'])) {
+        $query = $data[PARAM_DATA_ORDER_QUERY];
+        if (!isset($data[PARAM_SIGNATURE])) {
             return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数sig即签名数据");
         }
-        $sig = $data['sig'];
+        $sig = $data[PARAM_SIGNATURE];
         $sigSuccess = $this->checkSigResult($key, $query, $sig);
         if ($sigSuccess == false) {
             return $this->jsonResponse($query, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }
         try {
+            if (isset($this->param_trans_service)) {
+                $data = $this->param_trans_service->TransQueryOrderRequest($data);
+            }
             $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($key, $request);
-            if ($requiredQueryParams == false) {
+            if (!isset($requiredQueryParams) && $requiredQueryParams == false) {
                 $missingParams = $this->order_service->findMissingQueryParams($data);
+                if (!isset($missingParams) || !is_array($missingParams)) {
+                    $missingParams = [];
+                }
                 return $this->jsonResponse($order, ERROR_CODE_MISSING_QUERY_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
             }
             //根据提交的查询条件返回多个符合条件的订单列表
-            $orders = $this->order_service->apiQueryOrders($key,$query);
+            $orders = $this->order_service->apiQueryOrders($key, $query);
 
 //            $requiredOutputParams = $this->order_service->apiRequiredOutputParams();
 //            $missingParams = $this->findMissingParams($orders,$requiredOutputParams);
