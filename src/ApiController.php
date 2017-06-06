@@ -46,8 +46,6 @@ define("PARAM_DATA_ORDER_INPUT", "data");
  */
 define("PARAM_DATA_ORDER_QUERY", "data");
 
-
-
 class ApiController {
 
     use AuthorizesRequests,
@@ -131,7 +129,7 @@ class ApiController {
         }
         try {
             //根据提交的订单数据在系统中创建订单并返回这个订单的运单号等信息
-            $waybill_info = $this->order_service->apiCreateOrderReturnWaybillid($key, $order);
+            $waybill_info = $this->order_service->apiCreateOrderReturnWaybillid($key, $data);
             if (isset($this->param_trans_service)) {
                 $waybill_info = $this->param_trans_service->TransInputOrderResponse($waybill_info);
             }
@@ -168,7 +166,7 @@ class ApiController {
             if (isset($this->param_trans_service)) {
                 $data = $this->param_trans_service->TransQueryOrderRequest($data);
             }
-            $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($key, $request);
+            $requiredQueryParams = $this->order_service->apiCheckRequiredQueryParams($key, $data);
             if (!isset($requiredQueryParams) && $requiredQueryParams == false) {
                 $missingParams = $this->order_service->findMissingQueryParams($data);
                 if (!isset($missingParams) || !is_array($missingParams)) {
@@ -177,7 +175,7 @@ class ApiController {
                 return $this->jsonResponse($order, ERROR_CODE_MISSING_QUERY_PARAMS, "缺少输入的参数，请在输入时提供以下参数名称和对应的参数值:" . implode(",", $missingParams));
             }
             //根据提交的查询条件返回多个符合条件的订单列表
-            $orders = $this->order_service->apiQueryOrders($key, $query);
+            $orders = $this->order_service->apiQueryOrders($key, $data);
 
 //            $requiredOutputParams = $this->order_service->apiRequiredOutputParams();
 //            $missingParams = $this->findMissingParams($orders,$requiredOutputParams);
