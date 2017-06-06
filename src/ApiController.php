@@ -112,7 +112,12 @@ class ApiController {
             return $this->jsonResponse($data, ERROR_CODE_MISSING_INPUT_PARAMS, "缺少输入的参数，请在输入时提供参数" . PARAM_SIGNATURE . "即签名数据");
         }
         $sig = $data[PARAM_SIGNATURE];
-        $sigSuccess = $this->checkSigResult($key, $order, $sig);
+        if(is_array($order)){
+            $sigSuccess = $this->checkSigResult($key, json_encode($order), $sig);
+        }else
+        {
+            $sigSuccess = $this->checkSigResult($key, $order, $sig);
+        }
         if ($sigSuccess == false) {
             return $this->jsonResponse($order, ERROR_CODE_SIG_FAIL, "签名失败，请按规则生成对应的签名，可通过checkSig验证生成签名是否正确");
         }

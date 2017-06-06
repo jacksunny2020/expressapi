@@ -28,6 +28,9 @@ class DefaultSecurityService implements SecurityServiceContract {
         if (empty($data)) {
             throw new \Exception("缺少请求数据,请提供至少一个请求数据");
         }
+        if(is_array($data)){
+            $data = json_encode($data);
+        }
         $result = base64_encode(md5(trim($key) . trim($data)));
 
         return $result;
