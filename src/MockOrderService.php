@@ -50,4 +50,8 @@ class MockOrderService implements OrderServiceContract {
         return array();
     }
 
+    public function apiExistDuplicateOrder($key, $order) {
+        return false;
+    }
+
 }
