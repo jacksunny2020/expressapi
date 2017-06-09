@@ -1,5 +1,5 @@
 # expressapi
-api for express information exchange
+api for express information exchange,which may be used in laravel framework 5.4+
 
 How to install and configurate package
 
